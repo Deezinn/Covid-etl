@@ -1,6 +1,6 @@
 # 🦠 COVID-19 ETL por País
 
-Este projeto realiza um processo de **ETL (Extract, Transform, Load)** com dados da COVID-19 relacionados aos países. Os dados são extraídos de APIs públicas, transformados e carregados para posterior análise, sendo úteis para visualizações, relatórios ou estudos.
+Este projeto implementa um processo de **ETL (Extract, Transform, Load)** para dados da COVID-19 em nível de país. Através da extração de dados de APIs públicas, sua transformação e posterior carregamento, o projeto visa fornecer uma base de dados estruturada para análises, visualizações e relatórios relacionados à pandemia.
 
 ---
 
@@ -11,58 +11,58 @@ ETL_COVID/
 │
 ├── src/
 │   ├── extract/
-│   │   └── httpData.py
-│   │       # Responsável por extrair os dados das APIs.
+│   │   └── httpData.py        # Responsável por extrair os dados das APIs.
 │   │
 │   ├── load/
-│   │   └── loadData.py
-│   │       # Executa o pipeline ETL completo.
+│   │   └── loadData.py        # Executa o pipeline ETL completo.
 │   │
 │   ├── transform/
-│   │   ├── transformCovid.py
-│   │   │   # Realiza a limpeza e transformação dos dados.
-│   │   └── urlApis.json
-│   │       # Arquivo contendo as URLs das APIs com os dados da COVID.
+│   │   ├── transformCovid.py  # Realiza a limpeza e transformação dos dados.
+│   │   └── urlApis.json       # Arquivo contendo as URLs das APIs com os dados da COVID.
 │
-├── requirements.txt
-│   # Lista de dependências do projeto.
+├── requirements.txt           # Lista de dependências do projeto.
+```
 
 ▶️ Como Executar
-1. Clone o repositório
 
-git clone https://github.com/Deezinn/covid-etl.git
-cd covid-etl
+Siga os passos abaixo para executar o pipeline ETL:
 
-2. (Opcional) Crie um ambiente virtual
+    Clone o repositório:
+    Bash
 
-python -m venv venv
+    git clone [https://github.com/Deezinn/covid-etl.git](https://github.com/Deezinn/covid-etl.git)
+    cd covid-etl
+
+    (Opcional) Crie um ambiente virtual (recomendado):
+
+    python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
+```
 
-3. Instale as dependências
+    Instale as dependências:
+    Bash
 
 pip install -r requirements.txt
 
-4. Execute o pipeline ETL
+Execute o pipeline ETL:
+Bash
 
-python src/load/loadData.py
+    python src/load/loadData.py
 
 🌐 Fonte de Dados
 
-As URLs das APIs estão definidas em:
+    As URLs das APIs utilizadas para extrair os dados estão definidas no arquivo:
 
-src/transform/urlApis.json
+    src/transform/urlApis.json
 
-As APIs devem ser públicas e confiáveis, como:
+    Este projeto se baseia em APIs públicas e confiáveis, como:
 
     Our World in Data
-
     COVID-19 API
 
 🎯 Objetivo
 
     Automatizar a coleta de dados da pandemia por país.
-
-    Estruturar os dados para facilitar análises.
-
-    Servir como base para dashboards e relatórios.
+    Estruturar os dados para facilitar análises subsequentes.
+    Servir como base para a criação de dashboards e relatórios informativos.
