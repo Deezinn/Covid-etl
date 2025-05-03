@@ -21,7 +21,6 @@ ETL_COVID/
 │   │   └── urlApis.json       # Arquivo contendo as URLs das APIs com os dados da COVID.
 │
 ├── requirements.txt           # Lista de dependências do projeto.
-```
 
 ▶️ Como Executar
 
@@ -30,18 +29,18 @@ Siga os passos abaixo para executar o pipeline ETL:
     Clone o repositório:
     Bash
 
-    git clone [https://github.com/Deezinn/covid-etl.git](https://github.com/Deezinn/covid-etl.git)
-    cd covid-etl
+git clone [https://github.com/Deezinn/covid-etl.git](https://github.com/Deezinn/covid-etl.git)
+cd covid-etl
 
-    (Opcional) Crie um ambiente virtual (recomendado):
+(Opcional) Crie um ambiente virtual (recomendado):
+Bash
 
-    python -m venv venv
+python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
-```
 
-    Instale as dependências:
-    Bash
+Instale as dependências:
+Bash
 
 pip install -r requirements.txt
 
@@ -52,11 +51,11 @@ Bash
 
 🌐 Fonte de Dados
 
-    As URLs das APIs utilizadas para extrair os dados estão definidas no arquivo:
+As URLs das APIs utilizadas para extrair os dados estão definidas no arquivo:
 
-    src/transform/urlApis.json
+src/transform/urlApis.json
 
-    Este projeto se baseia em APIs públicas e confiáveis, como:
+Este projeto se baseia em APIs públicas e confiáveis, como:
 
     Our World in Data
     COVID-19 API
