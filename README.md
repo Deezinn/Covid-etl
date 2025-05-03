@@ -27,6 +27,8 @@ ETL_COVID/
    git clone https://github.com/Deezinn/covid-etl.git
    cd covid-etl
 
+    Crie um ambiente virtual (opcional, mas recomendado)
+
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
@@ -37,16 +39,4 @@ pip install -r requirements.txt
 
 Execute o ETL
 
-    python src/load/loadData.py
-
-📦 Dependências
-
-As bibliotecas utilizadas estão listadas em requirements.txt. Certifique-se de instalá-las antes de executar o ETL.
-📊 Fonte de Dados
-
-Os dados são extraídos a partir das URLs definidas em src/transform/urlApis.json. Elas devem apontar para APIs públicas com informações sobre COVID-19 por país.
-🎯 Objetivo
-
-    Automatizar a coleta, transformação e carregamento dos dados da COVID-19.
-
-    Organizar os dados para uso posterior em visualizações e análises.
+python src/load/loadData.py
