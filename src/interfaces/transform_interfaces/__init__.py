@@ -1,1 +1,2 @@
 from .transform_all_interface import TransformAllInterface
+from .transform_continents_interface import TransformContinentsInterface
