@@ -1,4 +1,4 @@
-from .etl import Extract
+from .etl import Extract, TransformAll
 
 import pandas as pd
 from pandas import json_normalize
@@ -6,14 +6,12 @@ from pandas import json_normalize
 class Pipeline:
     def __init__(self):
         self.__extract = Extract()
+        self.__transformAll = TransformAll()
     
     def run(self):
-        json_data = self.__extract.get()
+        raw_data = self.__extract.get()
+        raw_data_all = self.__transformAll.process(raw=raw_data['all'])
         
-        for endpoint,json in json_data.items():
-            jsn = json_normalize(json)
-            df = pd.DataFrame(jsn)
-            df.to_csv(f'data/{endpoint}.csv')
 
 if __name__ == "__main__":
     p = Pipeline()
