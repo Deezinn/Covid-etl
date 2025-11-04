@@ -48,7 +48,7 @@ class TransformStates(TransformStatesInterface):
                 case 'óbitosPorMilhão':
                     self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype("Int16")
                 case _:
-                    raise ValueError("Coluna inválida")
+                    print(f"Coluna inválida {coluna}")
         
     def _sanitize_columns(self):
         for coluna in self._raw_dataframe.columns:
@@ -60,6 +60,6 @@ class TransformStates(TransformStatesInterface):
                 case 'óbitos' | 'casos' | 'recuperados' | 'casosPorMilhão' | 'óbitosPorMilhão' | 'população':
                     self._raw_dataframe[coluna] = self._raw_dataframe[coluna].fillna(0)
                 case _:
-                    raise ValueError("Coluna inválida")
+                    print(f"Coluna inválida {coluna}")
         
                 
