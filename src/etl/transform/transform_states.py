@@ -43,8 +43,10 @@ class TransformStates(TransformStatesInterface):
                    self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype(str)
                 case 'atualizado':
                     self._raw_dataframe[coluna] = pd.to_datetime(self._raw_dataframe[coluna], unit='ms')
-                case 'óbitos' | 'casos' | 'recuperados' | 'casosPorMilhão' | 'óbitosPorMilhão' | 'população':
-                    self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype("Int64")
+                case 'óbitos' | 'casos' | 'recuperados' | 'casosPorMilhão' | 'população':
+                    self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype("Int32")
+                case 'óbitosPorMilhão':
+                    self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype("Int16")
                 case _:
                     raise ValueError("Coluna inválida")
         
