@@ -12,12 +12,24 @@ class Pipeline:
         self.__trasnformStates = TransformStates()
     
     def run(self):
+        """
+        Processo de extração de todos os dados, as urls estão na constante
+        """
         raw_data = self.__extract.get()
+        
+        
+        """
+        Processo de transformação dos dataframes
+        """
         raw_data_all = self.__transformAll.process(raw=raw_data['all'])
         raw_data_continents = self.__tranformContinents.process(raw=raw_data['continents'])
         raw_data_countries = self.__transformCountries.process(raw=raw_data['countries'])
         raw_data_states = self.__trasnformStates.process(raw=raw_data['states'])
         
+        
+        """
+        Processo de carga
+        """
         # print(raw_data_all.info())
         # print(raw_data_continents.info())
         # print(raw_data_countries.info())
