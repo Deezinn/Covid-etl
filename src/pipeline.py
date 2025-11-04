@@ -18,9 +18,9 @@ class Pipeline:
         raw_data_countries = self.__transformCountries.process(raw=raw_data['countries'])
         raw_data_states = self.__trasnformStates.process(raw=raw_data['states'])
         
-        print(raw_data_all.info())
-        print(raw_data_continents.info())
-        print(raw_data_countries.info())
+        # print(raw_data_all.info())
+        # print(raw_data_continents.info())
+        # print(raw_data_countries.info())
         print(raw_data_states.info())
 
 if __name__ == "__main__":
