@@ -7,8 +7,6 @@ class TransformCountries(TransformCountriesInterface):
         self._raw_dataframe = None
         
     def process(self, raw: str):
-        """Recebe o conjunto de dados em json e transforma em dataframe"""
-    
         raw_data_normalized = pd.json_normalize(raw)
         self._raw_dataframe = pd.DataFrame(raw_data_normalized)
         

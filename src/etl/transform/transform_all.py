@@ -7,8 +7,6 @@ class TransformAll(TransformAllInterface):
         self._raw_dataframe = None
         
     def process(self, raw: str):
-        """Recebe o conjunto de dados em json e transforma em dataframe"""
-    
         raw_data_normalized = pd.json_normalize(raw)
         self._raw_dataframe = pd.DataFrame(raw_data_normalized)
         
@@ -48,7 +46,6 @@ class TransformAll(TransformAllInterface):
         self._raw_dataframe = self._raw_dataframe.rename(columns=colunas_traducao)
     
     def _convert_types(self):
-        """Converte colunas para tipos ideais (int16, int32, int64, float32, datetime)."""
         self._raw_dataframe['atualizado_em'] = pd.to_datetime(self._raw_dataframe['atualizado_em'], unit='ms')
         
         columns_to_transform_int32 = ['casos_total', 'casos_hoje', 'mortes_total', 'recuperados_total', 'casos_ativos', 'casos_críticos']
@@ -68,7 +65,6 @@ class TransformAll(TransformAllInterface):
             self._raw_dataframe[coluna] = self._raw_dataframe[coluna].astype('int16')
         
     def _sanitize_columns(self):
-        """Trata valores ausentes e inconsistências nas colunas."""
         for coluna in self._raw_dataframe.columns:
             self._raw_dataframe[coluna].fillna(0, inplace=True)
         
