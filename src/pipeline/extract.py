@@ -1,6 +1,8 @@
 import requests
 
-class Extract:
+from domain.interfaces import ExtractInterface
+
+class Extract(ExtractInterface):
     def __init__(self, api_url: dict):
         if not api_url:
             raise ValueError("Não encontrei a url que extrai os dados")
@@ -22,5 +24,5 @@ class Extract:
                           "Esperava o status code 200")
             return data
         except Exception:
-            pass
-        
+            print('Deu erro na extração')
+            return data
