@@ -1,10 +1,14 @@
 import logging
+import os 
+
+from .constants import PATHLOG
+from .constants import FORMAT
 
 logger = logging.getLogger(__name__)
 
-FORMAT = '%(asctime)s %(message)s'
+os.makedirs(PATHLOG, exist_ok=True)
 
-logging.basicConfig(filename='../log/pipeline.log', level=logging.INFO, format=FORMAT)
+logging.basicConfig(filename=f'{PATHLOG}/pipeline.log', level=logging.INFO, format=FORMAT)
 
 def log_fabric(status, message):
     """Fábrica de logs
@@ -13,6 +17,9 @@ def log_fabric(status, message):
         status (str): info | warning | error | critical
         message (str): Mensagem a ser registrada
     """
+    
+    
+    
     log_method = {
         'info': logger.info,
         'warning': logger.warning,
