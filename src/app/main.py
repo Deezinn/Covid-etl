@@ -13,6 +13,8 @@ class Pipeline:
 
         raw_data, process_data = self.__transform.orchestrator(data)
         
+        print(raw_data)
+        print(process_data)
 
 if __name__ == "__main__":
     extract = Extract(APISURL)

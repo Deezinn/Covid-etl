@@ -6,24 +6,24 @@ class Transform(TransformInterface):
         pass
     
     def orchestrator(self, datasets):
-        bronze = {}
-        gold = {}
+        raw_data = {}
+        process_data = {}
          
-        for key, raw_data in datasets.items():
-            bronze[key] = raw_data
+        for key, data in datasets.items():
+            raw_data[key] = data
             match key:
                 case 'all':
-                    gold[key] = self._transform_all(raw_data)
+                    process_data[key] = self._transform_all(data)
                 case 'states':
-                    gold[key] = self._transform_states(raw_data)
+                    process_data[key] = self._transform_states(data)
                 case 'continents':
-                    gold[key] = self._transform_continents(raw_data)
+                    process_data[key] = self._transform_continents(data)
                 case 'countries':
-                    gold[key] = self._trasnform_countries(raw_data)
+                    process_data[key] = self._trasnform_countries(data)
                 case _:
                     pass
                 
-        return datasets, datasets
+        return raw_data, process_data
     
     @staticmethod
     def _transform_all(raw_data):
