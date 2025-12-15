@@ -1,2 +1,2 @@
 from .interfaces import ExtractInterface, TransformPipelineInterface, TransformBase
-from .mapper import AllCases, Continents, Countries, States
+from .dtos import AllCases, Continents, Countries, States
