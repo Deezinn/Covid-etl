@@ -10,15 +10,13 @@ os.makedirs(PATHLOG, exist_ok=True)
 
 logging.basicConfig(filename=f'{PATHLOG}/pipeline.log', level=logging.INFO, format=FORMAT)
 
-def log_fabric(status, message):
+def log(status, message):
     """Fábrica de logs
 
     Args:
         status (str): info | warning | error | critical
         message (str): Mensagem a ser registrada
     """
-    
-    
     
     log_method = {
         'info': logger.info,
