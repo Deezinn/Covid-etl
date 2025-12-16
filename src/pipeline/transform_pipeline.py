@@ -1,25 +1,33 @@
-import pandas as pd
 from domain.interfaces import TransformPipelineInterface
-
+from domain.exceptions import TransformerKeyNotFoundError
 from .transformers import AllCases, States, Continents, Countries
+
 
 class TransformPipeline(TransformPipelineInterface):
     def __init__(self):
-        self.__registry = {
-            'all_cases' : AllCases(),
-            'continents' : Continents(),
-            'countries' : Countries(),
-            'states' : States()
+        self._registry = {
+            'all_cases': AllCases(),
+            'continents': Continents(),
+            'countries': Countries(),
+            'states': States(),
         }
-    
+
     def execute(self, datasets):
         raw_data = {}
-        process_data = {}
-         
+        processed_data = {}
+
         for key, data in datasets.items():
             raw_data[key] = data
-            if self.__registry[key] is not None:
-                process_data[key] = self.__registry[key].transform(data=data)
-        
-        return raw_data, process_data
-    
+
+            transformer = self._registry.get(key)
+            if transformer is None:
+                raise TransformerKeyNotFoundError(key=key)
+
+            try:
+                processed_data[key] = transformer.transform(data)
+            except Exception as e:
+                raise RuntimeError(
+                    f"Erro no transformer '{key}' ({transformer.__class__.__name__})"
+                ) from e
+
+        return raw_data, processed_data
