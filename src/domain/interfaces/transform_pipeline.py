@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class TransformPipelineInterface(ABC):
     """Classe que servirá como modelo de uma orquestração de transformação"""
+    pass
     
     @abstractmethod
     def execute(self, datasets):
@@ -11,4 +12,4 @@ class TransformPipelineInterface(ABC):
         Args:
             datasets (json | dict): Dados puro da extração.
         """
-    
+        pass
