@@ -1,7 +1,7 @@
 import requests
 
 from domain.interfaces import ExtractInterface
-from settings.loggin import log_fabric
+from settings.loggin import log
 
 from requests import RequestException
 
@@ -17,19 +17,19 @@ class Extract(ExtractInterface):
 
     def get_data(self):
         data = {}
-        log_fabric('info', 'Iniciando processo de extração')
+        log('info', 'Iniciando processo de extração')
         try:
             for key, api in self.__api_url.items():
                 r = requests.get(api, timeout=10)
                 if r.status_code == 200:
-                    log_fabric('info', f"{key}: extraido com sucesso, status: {r.status_code}")
+                    log('info', f"{key}: extraido com sucesso, status: {r.status_code}")
                     data[key] = r.json()
                 else:
-                    log_fabric('error', f"O link: {api} deu erro de status code {r.status_code}. "
+                    log('error', f"O link: {api} deu erro de status code {r.status_code}. "
                           "Esperava o status code 200")
-            log_fabric('info', 'Processo de extração finalizada')
+            log('info', 'Processo de extração finalizada')
             return data
         except RequestException as e:
-            log_fabric('critical', 'Erro ao extrair os dados, ' \
+            log('critical', 'Erro ao extrair os dados, ' \
                   rf'erro: {e}')
             return data
