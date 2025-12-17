@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 class ExtractInterface(ABC):
+    """Classe que servirá como modelo da extração dos dados"""
     pass
 
     @abstractmethod
@@ -8,4 +9,5 @@ class ExtractInterface(ABC):
         """
         Método que irá extrair os dados da api
         """
+        pass
         

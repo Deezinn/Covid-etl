@@ -4,7 +4,7 @@ import pandas as pd
 from domain.interfaces import TransformBase
 from domain.dtos import AllCasesDTO
 
-from infrastructure.database.schema import AllCasesSchema
+from infrastructure.database.schemas import AllCasesSchema
 
 class AllCases(TransformBase):
 
@@ -82,15 +82,25 @@ class AllCases(TransformBase):
             '?', '??',
             None, pd.NA, np.nan
         ]
-        dataframe = dataframe.replace(possible_missing_values, 0)
-        dataframe = dataframe.apply(pd.to_numeric, errors='coerce').fillna(0)
-        dataframe.loc[:, (dataframe < 0).any()] = 0
         
+        numeric_columns = dataframe.select_dtypes(include=['int', 'float']).columns
+        
+        dataframe['ultima_atualizacao'] = pd.to_datetime(
+            dataframe['ultima_atualizacao'],
+            unit='ms',
+            utc=True
+        )
+
+        dataframe = dataframe.replace(possible_missing_values, 0)
+        
+        dataframe[numeric_columns] = dataframe[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+        dataframe[numeric_columns] = dataframe[numeric_columns].clip(lower=0)
+               
         return dataframe 
     
     def transform(self, data) -> str:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)
-        dataframe_validated = self._validate_output(dataframe_normalized)
-        return dataframe_validated.model_dump_json()
+        # dataframe_validated = self._validate_output(dataframe_normalized)
+        return 'dataframe_normalized.model_dump_json()'
     

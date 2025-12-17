@@ -1,0 +1,1 @@
+from .credential_postgres import ENVDATABASE

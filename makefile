@@ -1,10 +1,8 @@
 ifeq ($(OS),Windows_NT)
-    PYTHON=python
-    ACTIVATE=call .venv\Scripts\activate
+    PYTHON=..\ .venv\Scripts\python
 else
-    PYTHON=python3
-    ACTIVATE=. .venv/bin/activate
+    PYTHON=../.venv/bin/python
 endif
 
 run:
-	$(ACTIVATE) && $(PYTHON) -m src.pipeline
+	cd src && $(PYTHON) -m app.main
