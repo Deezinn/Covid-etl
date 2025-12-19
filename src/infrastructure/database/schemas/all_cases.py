@@ -1,9 +1,9 @@
 from typing import Annotated
 from pydantic import BaseModel, Field
-
+from datetime import datetime
 
 class AllCasesSchema(BaseModel):
-    ultima_atualizacao: Annotated[int, Field(ge=0)]
+    ultima_atualizacao: datetime
 
     casos_totais: Annotated[int, Field(ge=0)]
     casos_hoje: Annotated[int, Field(ge=0)]

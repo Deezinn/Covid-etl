@@ -27,7 +27,7 @@ class TransformPipeline(TransformPipelineInterface):
                 processed_data[key] = transformer.transform(data)
             except Exception as e:
                 raise RuntimeError(
-                    f"Erro no transformer '{key}' ({transformer.__class__.__name__})"
+                    f"Erro no transformer ({transformer.__class__.__name__})"
                 ) from e
 
         return raw_data, processed_data

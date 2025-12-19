@@ -4,7 +4,7 @@ import pandas as pd
 from domain.interfaces import TransformBase
 from domain.dtos import AllCasesDTO
 
-from infrastructure.database.schema import AllCasesSchema
+from infrastructure.database.schemas import AllCasesSchema
 
 class AllCases(TransformBase):
 
@@ -13,7 +13,7 @@ class AllCases(TransformBase):
         return AllCasesDTO(**data)
     
     @staticmethod
-    def _validate_output(dataframe_process) -> AllCasesSchema:
+    def _validate_output(dataframe_process):
         return AllCasesSchema(**dataframe_process.to_dict('records')[0])
 
     @staticmethod
@@ -42,6 +42,7 @@ class AllCases(TransformBase):
             "criticalPerOneMillion":"criticos_por_milhao_habitantes",     
             "affectedCountries":"numero_paises_afetados"  
         }      
+        
         dataframe = dataframe.rename(columns=translate_columns)
     
         transform_type = {
@@ -82,10 +83,20 @@ class AllCases(TransformBase):
             '?', '??',
             None, pd.NA, np.nan
         ]
-        dataframe = dataframe.replace(possible_missing_values, 0)
-        dataframe = dataframe.apply(pd.to_numeric, errors='coerce').fillna(0)
-        dataframe.loc[:, (dataframe < 0).any()] = 0
         
+        dataframe['ultima_atualizacao'] = pd.to_datetime(
+            dataframe['ultima_atualizacao'],
+            unit='ms',
+            utc=True
+        )
+        
+        numeric_columns = dataframe.select_dtypes(include=['int', 'float']).columns
+        
+        dataframe = dataframe.replace(possible_missing_values, 0)
+        
+        dataframe[numeric_columns] = dataframe[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+        dataframe[numeric_columns] = dataframe[numeric_columns].clip(lower=0)
+               
         return dataframe 
     
     def transform(self, data) -> str:

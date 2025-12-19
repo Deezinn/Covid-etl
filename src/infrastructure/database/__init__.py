@@ -1,1 +1,1 @@
-from .schema import AllCasesSchema
+from .schemas import AllCasesSchema
