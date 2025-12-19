@@ -14,7 +14,7 @@ class Pipeline:
         data = self.__extract.get_data()
 
         raw_data, process_data = self.__transform_pipeline.execute(data)
-        print(ENVDATABASE)
+        # print(raw_data, process_data)
         
 
 if __name__ == "__main__":

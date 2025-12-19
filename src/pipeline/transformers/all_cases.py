@@ -101,6 +101,6 @@ class AllCases(TransformBase):
     def transform(self, data) -> str:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)
-        # dataframe_validated = self._validate_output(dataframe_normalized)
-        return 'dataframe_normalized.model_dump_json()'
+        dataframe_validated = self._validate_output(dataframe_normalized)
+        return dataframe_validated.model_dump_json()
     
