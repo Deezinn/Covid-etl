@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class Continents:
+class ContinentsDTO:
     updated: Optional[int] = None
     cases: Optional[int] = None
     todayCases: Optional[int] = None

@@ -1,1 +1,1 @@
-from .schemas import AllCasesSchema
+from .schemas import AllCasesSchema, ContinentsSchema

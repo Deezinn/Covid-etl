@@ -86,7 +86,7 @@ class AllCases(TransformBase):
         
         dataframe['ultima_atualizacao'] = pd.to_datetime(
             dataframe['ultima_atualizacao'],
-            unit='ms',
+            unit='ns',
             utc=True
         )
         
