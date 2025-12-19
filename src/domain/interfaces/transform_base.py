@@ -5,14 +5,22 @@ class TransformBase(ABC):
     """Interface base para classes de transformação"""
     pass
     
+    @staticmethod
+    @abstractmethod
+    def _normalize(data):
+        pass
+    
+    @staticmethod
+    @abstractmethod
+    def _validate_output(dataframe_process):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def _sanitize(data):
+        pass
+    
     @abstractmethod
     def transform(self, data):
-        """Aplica transformação nos dados extraídos
-
-        Args:
-            data (dict): Dados brutos da etapa de extração
-
-        Returns:
-            dict: Dados transformados
-        """
         pass
+    
