@@ -120,10 +120,6 @@ class Continents(TransformBase):
                     lambda x: ast.literal_eval(x) if isinstance(x, str) else x
                 )
                 
-        dataframe['continente_info'] =  dataframe['continente_info'].apply(
-            lambda x: ast.literal_eval(x) if isinstance(x, str) else x
-        )
-
         dataframe['continente_lat'] = dataframe['continente_info'].apply(
             lambda x: x.get('Lat')
         )
@@ -142,7 +138,7 @@ class Continents(TransformBase):
                 .replace(possible_missing_values, 0)
                 .fillna(0)
             )
-        dataframe.to_csv('../csv/continents.csv')
+        
         return dataframe
     
     def transform(self, data) -> list[dict]:

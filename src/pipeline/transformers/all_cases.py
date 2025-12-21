@@ -81,11 +81,9 @@ class AllCases(TransformBase):
         
         dataframe = pd.DataFrame([data])
         
-        
         dataframe = dataframe.rename(columns=translate_columns)
         
         dataframe = dataframe.astype(transform_type)
-        
         
         dataframe = dataframe.replace(possible_missing_values, 0)
         
@@ -100,8 +98,7 @@ class AllCases(TransformBase):
         dataframe[numeric_columns] = dataframe[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
         
         dataframe[numeric_columns] = dataframe[numeric_columns].clip(lower=0)
-        
-        dataframe.to_csv('../csv/all_cases.csv')
+
         return dataframe 
 
     def transform(self, data) -> str:

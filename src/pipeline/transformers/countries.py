@@ -148,7 +148,6 @@ class Countries(TransformBase):
         if extracao_ok and 'pais_info' in dataframe.columns:
             dataframe.drop(columns=['pais_info'], inplace=True)
         
-        dataframe.to_csv('../csv/countries.csv')
         return dataframe
     
     def transform(self, data) -> None:
