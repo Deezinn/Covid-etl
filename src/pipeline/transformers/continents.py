@@ -135,10 +135,10 @@ class Continents(TransformBase):
 
         return dataframe
     
-    def transform(self, data) -> list[ContinentsSchema]:
+    def transform(self, data) -> list[dict]:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)
         dataframe_validated = self._validate_output(dataframe_normalized)
-        return dataframe_validated
+        return [data_dump.model_dump() for data_dump in dataframe_validated]
         
         

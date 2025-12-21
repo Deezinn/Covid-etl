@@ -44,6 +44,15 @@ class AllCases(TransformBase):
         }      
         
         dataframe = dataframe.rename(columns=translate_columns)
+        
+        continente_translate = {
+            'Asia': "Ásia", 
+            'Europe': 'Europa', 
+            'Africa': 'África', 
+            'North America': 'América do Norte',
+            'South America': 'América do Sul',
+            'Australia-Oceania ': 'Oceania'
+        }
     
         transform_type = {
             'ultima_atualizacao': 'int64',
@@ -98,6 +107,21 @@ class AllCases(TransformBase):
         dataframe[numeric_columns] = dataframe[numeric_columns].clip(lower=0)
                
         return dataframe 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     def transform(self, data) -> str:
         data_normalized = self._normalize(data)

@@ -1,6 +1,6 @@
 from domain.interfaces import TransformPipelineInterface
 from domain.exceptions import TransformerKeyNotFoundError
-from .transformers import AllCases, States, Continents, Countries
+from .transformers import AllCases, Continents, Countries
 
 
 class TransformPipeline(TransformPipelineInterface):
@@ -9,7 +9,6 @@ class TransformPipeline(TransformPipelineInterface):
             'all_cases': AllCases(),
             'continents': Continents(),
             'countries': Countries(),
-            'states': States(),
         }
 
     def execute(self, datasets):
@@ -29,5 +28,5 @@ class TransformPipeline(TransformPipelineInterface):
                 raise RuntimeError(
                     f"Erro no transformer ({transformer.__class__.__name__})"
                 ) from e
-
+        
         return raw_data, processed_data
