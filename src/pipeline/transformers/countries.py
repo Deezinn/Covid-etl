@@ -5,6 +5,9 @@ import numpy as np
 from domain.interfaces import TransformBase
 from domain.dtos import CountriesDTO
 
+from infrastructure.database.schemas import CountriesSchema
+
+
 class Countries(TransformBase):
     pass
 
@@ -14,8 +17,7 @@ class Countries(TransformBase):
     
     @staticmethod
     def _validate_output(dataframe_process):
-        pass
-
+        return [CountriesSchema(**registro_processado) for registro_processado in dataframe_process.to_dict(orient='records')]
     @staticmethod
     def _sanitize(data) -> pd.DataFrame:
         
@@ -147,12 +149,11 @@ class Countries(TransformBase):
                 
         if extracao_ok and 'pais_info' in dataframe.columns:
             dataframe.drop(columns=['pais_info'], inplace=True)
-        
+            
         return dataframe
     
-    def transform(self, data) -> None:
+    def transform(self, data) -> list[object]:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)
         dataframe_validated = self._validate_output(dataframe_normalized)
-        
-        pass
+        return [dados_validados.model_dump() for dados_validados in dataframe_validated]
