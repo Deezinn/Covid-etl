@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class Countries:
+class CountriesDTO:
     updated: Optional[int] = None
     country: Optional[str] = None
     countryInfo: Optional[dict] = None
