@@ -21,7 +21,6 @@ class TransformPipeline(TransformPipelineInterface):
             transformer = self._registry.get(key)
             if transformer is None:
                 raise TransformerKeyNotFoundError(key=key)
-
             try:
                 processed_data[key] = transformer.transform(data)
             except Exception as e:
