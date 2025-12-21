@@ -1,67 +1,206 @@
-# 🦠 COVID-19 ETL por País
+# Covid ETL Pipeline
 
-Este projeto implementa um processo de **ETL (Extract, Transform, Load)** para dados da COVID-19 em nível de país. Através da extração de dados de APIs públicas, sua transformação e posterior carregamento, o projeto visa fornecer uma base de dados estruturada para análises, visualizações e relatórios relacionados à pandemia.
+Projeto pessoal de **ETL em Python** para coleta, transformação e futura persistência de dados relacionados à Covid-19, seguindo **boas práticas de engenharia de dados**, **arquitetura em camadas** e **separação por domínio**.
+
+> ⚠️ **Status atual**: a camada de banco de dados (conexão PostgreSQL e models SQLAlchemy) **ainda não está implementada**, mas **todas as entidades e estruturas já estão preparadas** para inclusão futura.
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🎯 Objetivo do Projeto
 
-```text
-ETL_COVID/
-│
-├── src/
-│   ├── extract/
-│   │   └── httpData.py        # Responsável por extrair os dados das APIs.
-│   │
-│   ├── load/
-│   │   └── loadData.py        # Executa o pipeline ETL completo.
-│   │
-│   ├── transform/
-│   │   ├── transformCovid.py  # Realiza a limpeza e transformação dos dados.
-│   │   └── urlApis.json       # Arquivo contendo as URLs das APIs com os dados da COVID.
-│
-├── requirements.txt           # Lista de dependências do projeto.
+* Estruturar um **pipeline de dados robusto** para dados de Covid-19
+* Aplicar conceitos de:
 
-▶️ Como Executar
+  * ETL (Extract, Transform, Load)
+  * Arquitetura limpa
+  * Domain-driven design (DDD simplificado)
+  * Interfaces e contratos
+  * Escalabilidade e manutenção
+* Servir como **base evolutiva** para:
 
-Siga os passos abaixo para executar o pipeline ETL:
+  * Persistência em PostgreSQL
+  * Orquestração futura (Airflow, Prefect, etc.)
+  * Exposição via API
 
-    Clone o repositório:
-    Bash
+---
 
-git clone [https://github.com/Deezinn/covid-etl.git](https://github.com/Deezinn/covid-etl.git)
-cd covid-etl
+## 🧱 Arquitetura Geral
 
-(Opcional) Crie um ambiente virtual (recomendado):
-Bash
+O projeto está organizado dentro do diretório `src/` e segue uma separação clara de responsabilidades:
 
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+```
+src/
+├── app/              # Ponto de entrada da aplicação
+├── domain/           # Regras de negócio, contratos e DTOs
+├── pipeline/         # Implementação do ETL (extract + transform)
+├── infrastructure/  # Infraestrutura (DB, schemas, segurança)
+├── settings/         # Configurações globais e logging
+```
 
-Instale as dependências:
-Bash
+---
 
-pip install -r requirements.txt
+## 📁 Estrutura de Diretórios (Detalhada)
 
-Execute o pipeline ETL:
-Bash
+### `app/`
 
-    python src/load/loadData.py
+Responsável por iniciar a aplicação.
 
-🌐 Fonte de Dados
+* `main.py`: ponto inicial de execução
 
-As URLs das APIs utilizadas para extrair os dados estão definidas no arquivo:
+---
 
-src/transform/urlApis.json
+### `domain/`
 
-Este projeto se baseia em APIs públicas e confiáveis, como:
+Camada central do projeto. **Não depende de infraestrutura**.
 
-    Our World in Data
-    COVID-19 API
+#### `domain/dtos/`
 
-🎯 Objetivo
+DTOs (Data Transfer Objects) que representam os dados tratados no pipeline:
 
-    Automatizar a coleta de dados da pandemia por país.
-    Estruturar os dados para facilitar análises subsequentes.
-    Servir como base para a criação de dashboards e relatórios informativos.
+* `all_cases.py`
+* `continents.py`
+* `countries.py`
+
+#### `domain/interfaces/`
+
+Contratos e classes base:
+
+* `extract.py`: interface de extração
+* `transform_base.py`: classe base para transformações
+* `transform_pipeline.py`: contrato do pipeline de transformação
+
+#### `domain/exceptions/`
+
+Exceções customizadas do domínio:
+
+* `pipeline.py`
+* `orchestrator.py`
+* `transform.py`
+
+#### `domain/utils/`
+
+Funções utilitárias reutilizáveis:
+
+* `clean_list.py`
+
+---
+
+### `pipeline/`
+
+Implementação prática do ETL.
+
+* `extract.py`: lógica de extração de dados
+* `transform_pipeline.py`: orquestra as transformações
+
+#### `pipeline/transformers/`
+
+Transformações específicas por entidade:
+
+* `all_cases.py`
+* `continents.py`
+* `countries.py`
+
+Cada transformer segue contratos definidos no domínio.
+
+---
+
+### `infrastructure/`
+
+Camada responsável por detalhes técnicos externos.
+
+#### `infrastructure/database/`
+
+Preparada para persistência com PostgreSQL + SQLAlchemy.
+
+* `connections/postgre.py`: **(ainda não implementado)** conexão com o banco
+* `schemas/`: schemas das entidades
+
+  * `all_cases.py`
+  * `continents.py`
+* `models/`: **reservado para models SQLAlchemy**
+* `security/credential_postgres.py`: credenciais do banco
+
+> ⚠️ Models e conexão ainda não foram implementados, mas a estrutura já está pronta.
+
+---
+
+### `settings/`
+
+Configurações globais do projeto:
+
+* `constants.py`: constantes globais
+* `loggin.py` / `log_fire.py`: configuração de logs
+
+---
+
+## ▶️ Como Executar o Projeto
+
+### 1️⃣ Ative o ambiente virtual
+
+O projeto utiliza `.venv`.
+
+### 2️⃣ Execução via Makefile (Recomendado)
+
+O projeto **não é executado a partir da raiz**, mas sim utilizando o módulo `src.pipeline`.
+
+No `Makefile`:
+
+```
+ifeq ($(OS),Windows_NT)
+    PYTHON=python
+    ACTIVATE=call .venv\Scripts\activate
+else
+    PYTHON=python3
+    ACTIVATE=. .venv/bin/activate
+endif
+
+run:
+	$(ACTIVATE) && $(PYTHON) -m src.pipeline
+```
+
+Execute:
+
+```
+make run
+```
+
+---
+
+## 🧪 Estado Atual do Pipeline
+
+* ✅ Extração implementada
+* ✅ Transformações por entidade
+* ✅ Validações e DTOs
+* ✅ Logging estruturado
+* ⏳ Persistência no banco (em desenvolvimento)
+* ⏳ Models SQLAlchemy (em desenvolvimento)
+
+---
+
+## 🛣️ Próximos Passos Planejados
+
+* Implementar conexão PostgreSQL
+* Criar models SQLAlchemy
+* Implementar camada de load
+* Adicionar testes automatizados
+* Criar versionamento de schemas
+* Evoluir para orquestração (Airflow / Prefect)
+
+---
+
+## 📌 Observações Importantes
+
+* Projeto **pessoal**, focado em aprendizado profundo
+* Estrutura pensada para **crescer sem refatorações grandes**
+* Todas as decisões arquiteturais priorizam:
+
+  * Clareza
+  * Manutenibilidade
+  * Escalabilidade
+
+---
+
+## 👤 Autor
+
+**André Luiz**
+Projeto pessoal de engenharia de dados com Python 🚀
