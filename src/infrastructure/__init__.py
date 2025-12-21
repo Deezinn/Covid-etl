@@ -1,2 +1,2 @@
 from .database.schemas import AllCasesSchema
-from .database.security.credential_postgres import ENVDATABASE
+from .database.security.credential_postgres import credential_postgres

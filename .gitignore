@@ -175,3 +175,8 @@ cython_debug/
 
 # csv
 /data
+
+# local database
+.db
+/.db
+*.db

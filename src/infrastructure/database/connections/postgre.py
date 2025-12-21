@@ -1,9 +1,10 @@
-from sqlalchemy import URL
+from pydantic import BaseModel, Field
 
-URL_OBJECT = URL.create(
-    drivername='',
-    username='',
-    password='',
-    host='',
-    database='',
-)
+
+class PostgreCredentials(BaseModel):
+    drivername: str = Field(default="postgresql+psycopg2")
+    username: str
+    password: str
+    host: str
+    port: int
+    database: str
