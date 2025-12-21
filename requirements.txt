@@ -5,3 +5,4 @@ pydantic
 logfire
 sqlalchemy
 python-dotenv
+psycopg2

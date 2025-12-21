@@ -1,1 +1,1 @@
-from .credential_postgres import ENVDATABASE
+from .credential_postgres import credential_postgres
