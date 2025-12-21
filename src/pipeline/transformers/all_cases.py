@@ -18,8 +18,7 @@ class AllCases(TransformBase):
 
     @staticmethod
     def _sanitize(data) -> pd.DataFrame:
-        dataframe = pd.DataFrame([data])
-        
+
         translate_columns = { "updated":"ultima_atualizacao",
             "cases":"casos_totais",
             "todayCases":"casos_hoje",     
@@ -43,17 +42,6 @@ class AllCases(TransformBase):
             "affectedCountries":"numero_paises_afetados"  
         }      
         
-        dataframe = dataframe.rename(columns=translate_columns)
-        
-        continente_translate = {
-            'Asia': "Ásia", 
-            'Europe': 'Europa', 
-            'Africa': 'África', 
-            'North America': 'América do Norte',
-            'South America': 'América do Sul',
-            'Australia-Oceania ': 'Oceania'
-        }
-    
         transform_type = {
             'ultima_atualizacao': 'int64',
             'recuperados_totais': 'int64',
@@ -77,8 +65,6 @@ class AllCases(TransformBase):
             'recuperados_por_milhao_habitantes': 'float32',
         }
         
-        dataframe = dataframe.astype(transform_type)
-        
         possible_missing_values = [
             '', ' ', '  ',
             'null', 'NULL',
@@ -93,6 +79,16 @@ class AllCases(TransformBase):
             None, pd.NA, np.nan
         ]
         
+        dataframe = pd.DataFrame([data])
+        
+        
+        dataframe = dataframe.rename(columns=translate_columns)
+        
+        dataframe = dataframe.astype(transform_type)
+        
+        
+        dataframe = dataframe.replace(possible_missing_values, 0)
+        
         dataframe['ultima_atualizacao'] = pd.to_datetime(
             dataframe['ultima_atualizacao'],
             unit='ns',
@@ -101,28 +97,13 @@ class AllCases(TransformBase):
         
         numeric_columns = dataframe.select_dtypes(include=['int', 'float']).columns
         
-        dataframe = dataframe.replace(possible_missing_values, 0)
-        
         dataframe[numeric_columns] = dataframe[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+        
         dataframe[numeric_columns] = dataframe[numeric_columns].clip(lower=0)
-               
+        
+        dataframe.to_csv('../csv/all_cases.csv')
         return dataframe 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     def transform(self, data) -> str:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)

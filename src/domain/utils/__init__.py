@@ -1,1 +1,1 @@
-from .clean_list import CleanList
+from .clean_list import cleanList

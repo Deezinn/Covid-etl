@@ -31,7 +31,7 @@ class ContinentsSchema(BaseModel):
     recuperados_por_milhao_habitantes: Annotated[float, Field(ge=0.0)]
     criticos_por_milhao_habitantes: Annotated[float, Field(ge=0.0)]
     
-    paises: Annotated[List[str], Field(max_length=60)]
+    paises: List[str]
     
     continente_lat: float
     continente_long: float

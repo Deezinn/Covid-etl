@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 from domain.interfaces import TransformBase
-from domain.utils import CleanList
+from domain.utils import cleanList
 from domain.dtos import ContinentsDTO
 
 from infrastructure.database.schemas import ContinentsSchema
@@ -22,8 +22,7 @@ class Continents(TransformBase):
 
     @staticmethod
     def _sanitize(data) -> pd.DataFrame:
-        dataframe = pd.DataFrame(data)
-
+        
         column_translate = {
             'updated': 'ultima_atualizacao',
             'cases': 'casos_totais',
@@ -93,14 +92,49 @@ class Continents(TransformBase):
             None, pd.NA, np.nan
         ]
         
+        dataframe = pd.DataFrame(data)
+        
         dataframe = dataframe.rename(columns=column_translate)
+        
+        dataframe = dataframe.astype(dataframe_column_types)
         
         dataframe['ultima_atualizacao'] = pd.to_datetime(arg=dataframe['ultima_atualizacao'], unit='ns', utc=True)
         
-        dataframe['paises'] = dataframe['paises'].apply(
-            CleanList
+        for coluna in dataframe.select_dtypes(['object']).columns:
+            if coluna == 'paises':
+                dataframe[coluna] = dataframe[coluna].apply(
+                    cleanList
+                )
+            else:
+                dataframe[coluna] = (dataframe[coluna]
+                         .astype('str')
+                         .str.
+                         strip().
+                         str.title())
+            
+            if coluna == 'continente':
+                dataframe[coluna] = dataframe[coluna].replace(rename_continente)
+            
+            if coluna == 'continente_info':
+                dataframe[coluna] =  dataframe[coluna].apply(
+                    lambda x: ast.literal_eval(x) if isinstance(x, str) else x
+                )
+                
+        dataframe['continente_info'] =  dataframe['continente_info'].apply(
+            lambda x: ast.literal_eval(x) if isinstance(x, str) else x
         )
 
+        dataframe['continente_lat'] = dataframe['continente_info'].apply(
+            lambda x: x.get('Lat')
+        )
+
+        dataframe['continente_long'] = dataframe['continente_info'].apply(
+            lambda x: x.get('Long')
+        )
+        
+        if 'continente_lat' and 'continente_long' in dataframe.columns:
+            del dataframe['continente_info']
+        
         for coluna in dataframe.select_dtypes(['int', 'float']).columns:
             dataframe[coluna] = (
                 dataframe[coluna]
@@ -108,31 +142,7 @@ class Continents(TransformBase):
                 .replace(possible_missing_values, 0)
                 .fillna(0)
             )
-
-        dataframe['continente'] =  dataframe['continente'].replace(rename_continente)
-        dataframe['continente'] = (dataframe['continente'].astype('str').str.strip().str.title())
-                
-        dataframe = dataframe.astype(dataframe_column_types)
-        
-        if dataframe['ultima_atualizacao'].astype(str).str.len().unique() < 13:
-            print('Estrutura do dado errado')
-            # aplicar log de erro
-        
-        dataframe['continente_info'] =  dataframe['continente_info'].apply(
-            lambda x: ast.literal_eval(x) if isinstance(x, str) else x
-        )
-
-        dataframe['continente_lat'] = dataframe['continente_info'].apply(
-            lambda x: x.get('lat')
-        )
-
-        dataframe['continente_long'] = dataframe['continente_info'].apply(
-            lambda x: x.get('long')
-        )
-
-        if 'continente_lat' and 'continente_long' in dataframe.columns:
-            del dataframe['continente_info']
-
+        dataframe.to_csv('../csv/continents.csv')
         return dataframe
     
     def transform(self, data) -> list[dict]:

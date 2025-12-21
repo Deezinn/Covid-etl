@@ -136,7 +136,6 @@ class Countries(TransformBase):
             lambda x: x.get(coluna)
         )
         
-        # remove invalid values
         mask_invalidos_cases = dataframe['casos_criticos'] > dataframe['casos_ativos']        
         dataframe = dataframe[~mask_invalidos_cases]
 
@@ -149,6 +148,7 @@ class Countries(TransformBase):
         if extracao_ok and 'pais_info' in dataframe.columns:
             dataframe.drop(columns=['pais_info'], inplace=True)
         
+        dataframe.to_csv('../csv/countries.csv')
         return dataframe
     
     def transform(self, data) -> None:

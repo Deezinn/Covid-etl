@@ -1,4 +1,4 @@
-def CleanList(x):
+def cleanList(x):
     if not isinstance(x, list):
         return x
 
