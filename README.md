@@ -1,8 +1,8 @@
 # Covid ETL Pipeline
 
-Projeto pessoal de **ETL em Python** para coleta, transformação e futura persistência de dados relacionados à Covid-19, seguindo **boas práticas de engenharia de dados**, **arquitetura em camadas** e **separação por domínio**.
+Projeto pessoal de **ETL em Python** para coleta, transformação e **persistência de dados** relacionados à Covid-19, seguindo **boas práticas de engenharia de dados**, **arquitetura em camadas** e **separação por domínio**.
 
-> ⚠️ **Status atual**: a camada de banco de dados (conexão PostgreSQL e models SQLAlchemy) **ainda não está implementada**, mas **todas as entidades e estruturas já estão preparadas** para inclusão futura.
+> ✅ **Status atual**: o pipeline ETL está **totalmente funcional**, incluindo **extração, transformação e carga (load)**. O projeto suporta **SQLite local automaticamente** e **PostgreSQL via `.env`**.
 
 ---
 
@@ -18,7 +18,7 @@ Projeto pessoal de **ETL em Python** para coleta, transformação e futura persi
   * Escalabilidade e manutenção
 * Servir como **base evolutiva** para:
 
-  * Persistência em PostgreSQL
+  * Persistência relacional (SQLite / PostgreSQL)
   * Orquestração futura (Airflow, Prefect, etc.)
   * Exposição via API
 
@@ -32,8 +32,8 @@ O projeto está organizado dentro do diretório `src/` e segue uma separação c
 src/
 ├── app/              # Ponto de entrada da aplicação
 ├── domain/           # Regras de negócio, contratos e DTOs
-├── pipeline/         # Implementação do ETL (extract + transform)
-├── infrastructure/  # Infraestrutura (DB, schemas, segurança)
+├── pipeline/         # Implementação do ETL (extract, transform, load)
+├── infrastructure/  # Infraestrutura (DB, models, schemas, conexões)
 ├── settings/         # Configurações globais e logging
 ```
 
@@ -45,7 +45,7 @@ src/
 
 Responsável por iniciar a aplicação.
 
-* `main.py`: ponto inicial de execução
+* `main.py`: ponto inicial de execução do pipeline
 
 ---
 
@@ -55,7 +55,7 @@ Camada central do projeto. **Não depende de infraestrutura**.
 
 #### `domain/dtos/`
 
-DTOs (Data Transfer Objects) que representam os dados tratados no pipeline:
+DTOs (Data Transfer Objects) definidos com **`@dataclass`**, representando dados já tratados:
 
 * `all_cases.py`
 * `continents.py`
@@ -63,11 +63,12 @@ DTOs (Data Transfer Objects) que representam os dados tratados no pipeline:
 
 #### `domain/interfaces/`
 
-Contratos e classes base:
+Contratos e abstrações do domínio:
 
-* `extract.py`: interface de extração
+* `extract.py`: contrato de extração
 * `transform_base.py`: classe base para transformações
 * `transform_pipeline.py`: contrato do pipeline de transformação
+* `load.py`: contrato da camada de carga
 
 #### `domain/exceptions/`
 
@@ -89,12 +90,13 @@ Funções utilitárias reutilizáveis:
 
 Implementação prática do ETL.
 
-* `extract.py`: lógica de extração de dados
-* `transform_pipeline.py`: orquestra as transformações
+* `extract.py`: extração dos dados
+* `transform_pipeline.py`: orquestra transformações
+* `load.py`: executa a carga dos dados
 
 #### `pipeline/transformers/`
 
-Transformações específicas por entidade:
+Transformações específicas por entidade, utilizando **Pandas**:
 
 * `all_cases.py`
 * `continents.py`
@@ -110,17 +112,39 @@ Camada responsável por detalhes técnicos externos.
 
 #### `infrastructure/database/`
 
-Preparada para persistência com PostgreSQL + SQLAlchemy.
+Persistência de dados com **SQLAlchemy**.
 
-* `connections/postgre.py`: **(ainda não implementado)** conexão com o banco
-* `schemas/`: schemas das entidades
+##### `connections/`
 
-  * `all_cases.py`
-  * `continents.py`
-* `models/`: **reservado para models SQLAlchemy**
-* `security/credential_postgres.py`: credenciais do banco
+* `factory.py`: factory de conexões
+* `postgre.py`: conexão PostgreSQL
+* `sqlite.py`: conexão SQLite local
+* `loader.py`: executor de carga
 
-> ⚠️ Models e conexão ainda não foram implementados, mas a estrutura já está pronta.
+> 🔁 **Comportamento automático**:
+>
+> * Se **não existir `.env`**, o projeto cria automaticamente um banco **`covid.db` (SQLite)**
+> * Se **existir `.env`**, a carga é feita no **PostgreSQL**
+
+##### `models/`
+
+Models SQLAlchemy:
+
+* `base.py`: base declarativa
+* `raw/`: dados brutos
+* `process/`: dados processados
+
+##### `schemas/`
+
+Schemas definidos com **Pydantic**, usados para validação:
+
+* `all_cases.py`
+* `continents.py`
+* `countries.py`
+
+##### `security/`
+
+* `credential_postgres.py`: leitura segura das credenciais
 
 ---
 
@@ -129,7 +153,7 @@ Preparada para persistência com PostgreSQL + SQLAlchemy.
 Configurações globais do projeto:
 
 * `constants.py`: constantes globais
-* `loggin.py` / `log_fire.py`: configuração de logs
+* `loggin.py` / `log_fire.py`: logging estruturado
 
 ---
 
@@ -139,29 +163,12 @@ Configurações globais do projeto:
 
 O projeto utiliza `.venv`.
 
-### 2️⃣ Execução via Makefile (Recomendado)
+### 2️⃣ Execução
 
-O projeto **não é executado a partir da raiz**, mas sim utilizando o módulo `src.pipeline`.
-
-No `Makefile`:
+Execute o pipeline a partir do módulo principal:
 
 ```
-ifeq ($(OS),Windows_NT)
-    PYTHON=python
-    ACTIVATE=call .venv\Scripts\activate
-else
-    PYTHON=python3
-    ACTIVATE=. .venv/bin/activate
-endif
-
-run:
-	$(ACTIVATE) && $(PYTHON) -m src.pipeline
-```
-
-Execute:
-
-```
-make run
+python3 -m app.main
 ```
 
 ---
@@ -169,22 +176,22 @@ make run
 ## 🧪 Estado Atual do Pipeline
 
 * ✅ Extração implementada
-* ✅ Transformações por entidade
-* ✅ Validações e DTOs
+* ✅ Transformações por entidade (Pandas)
+* ✅ DTOs com `dataclass`
+* ✅ Validações com Pydantic
+* ✅ Carga funcional (SQLite / PostgreSQL)
+* ✅ Models com SQLAlchemy
 * ✅ Logging estruturado
-* ⏳ Persistência no banco (em desenvolvimento)
-* ⏳ Models SQLAlchemy (em desenvolvimento)
 
 ---
 
 ## 🛣️ Próximos Passos Planejados
 
-* Implementar conexão PostgreSQL
-* Criar models SQLAlchemy
-* Implementar camada de load
 * Adicionar testes automatizados
 * Criar versionamento de schemas
+* Melhorar observabilidade
 * Evoluir para orquestração (Airflow / Prefect)
+* Expor dados via API
 
 ---
 
@@ -192,11 +199,7 @@ make run
 
 * Projeto **pessoal**, focado em aprendizado profundo
 * Estrutura pensada para **crescer sem refatorações grandes**
-* Todas as decisões arquiteturais priorizam:
-
-  * Clareza
-  * Manutenibilidade
-  * Escalabilidade
+* Arquitetura baseada em **contratos e separação de responsabilidades**
 
 ---
 
