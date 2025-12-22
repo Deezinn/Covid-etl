@@ -89,7 +89,7 @@ class AllCases(TransformBase):
         
         dataframe['ultima_atualizacao'] = pd.to_datetime(
             dataframe['ultima_atualizacao'],
-            unit='ns',
+            unit='ms',
             utc=True
         )
         
@@ -101,9 +101,9 @@ class AllCases(TransformBase):
 
         return dataframe 
 
-    def transform(self, data) -> str:
+    def transform(self, data) -> dict:
         data_normalized = self._normalize(data)
         dataframe_normalized = self._sanitize(data_normalized)
         dataframe_validated = self._validate_output(dataframe_normalized)
-        return dataframe_validated.model_dump_json()
+        return dataframe_validated.model_dump()
     
