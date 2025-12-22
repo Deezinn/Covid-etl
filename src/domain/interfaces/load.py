@@ -6,4 +6,9 @@ class LoadInterface(ABC):
     pass
     
     @abstractmethod
+    def load_raw(self, raw):
+        pass
     
+    @abstractmethod
+    def load_process(self, process):
+        pass

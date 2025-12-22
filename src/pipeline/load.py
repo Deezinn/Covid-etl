@@ -2,8 +2,9 @@ from infrastructure.database.models.raw import RawAllCases,RawContinents,RawCoun
 from infrastructure.database.models.process import ProcessedAllCases, ProcessedContinents, ProcessedCountries
 
 from sqlalchemy import insert
+from domain.interfaces.load import LoadInterface
 
-class Load:
+class Load(LoadInterface):
     def __init__(self, engine):
         self.__engine = engine
 
