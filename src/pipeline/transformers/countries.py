@@ -132,12 +132,18 @@ class Countries(TransformBase):
                 dataframe['pais_info'] = dataframe['pais_info'].apply(
                     lambda x: ast.literal_eval(x) if isinstance(x, str) else x
                 )
-            
-        for coluna in extrair_colunas:
-            dataframe[coluna] = dataframe['pais_info'].apply(
-            lambda x: x.get(coluna)
-        )
         
+        for coluna in extrair_colunas:
+            if coluna == 'Iso2' or coluna == 'Iso3':
+                dataframe[coluna] = dataframe['pais_info'].apply(
+                    lambda x: x.get(coluna) if x.get(coluna) != '' else "Não informado" 
+                )
+            else:
+                dataframe[coluna] = dataframe['pais_info'].apply(
+                    lambda x: x.get(coluna) if x.get(coluna) != '' else 0
+                )
+                
+            
         mask_invalidos_cases = dataframe['casos_criticos'] > dataframe['casos_ativos']        
         dataframe = dataframe[~mask_invalidos_cases]
 
@@ -149,7 +155,7 @@ class Countries(TransformBase):
                 
         if extracao_ok and 'pais_info' in dataframe.columns:
             dataframe.drop(columns=['pais_info'], inplace=True)
-            
+        
         return dataframe
     
     def transform(self, data) -> list[object]:

@@ -98,7 +98,7 @@ class Continents(TransformBase):
         
         dataframe = dataframe.astype(dataframe_column_types)
         
-        dataframe['ultima_atualizacao'] = pd.to_datetime(arg=dataframe['ultima_atualizacao'], unit='ns', utc=True)
+        dataframe['ultima_atualizacao'] = pd.to_datetime(arg=dataframe['ultima_atualizacao'], unit='ms', utc=True)
         
         for coluna in dataframe.select_dtypes(['object']).columns:
             if coluna == 'paises':
@@ -119,7 +119,7 @@ class Continents(TransformBase):
                 dataframe[coluna] =  dataframe[coluna].apply(
                     lambda x: ast.literal_eval(x) if isinstance(x, str) else x
                 )
-                
+        
         dataframe['continente_lat'] = dataframe['continente_info'].apply(
             lambda x: x.get('Lat')
         )
@@ -127,7 +127,6 @@ class Continents(TransformBase):
         dataframe['continente_long'] = dataframe['continente_info'].apply(
             lambda x: x.get('Long')
         )
-        
         if 'continente_lat' and 'continente_long' in dataframe.columns:
             del dataframe['continente_info']
         
@@ -138,7 +137,7 @@ class Continents(TransformBase):
                 .replace(possible_missing_values, 0)
                 .fillna(0)
             )
-        
+            
         return dataframe
     
     def transform(self, data) -> list[dict]:
